@@ -7,6 +7,9 @@ import java.util.Objects;
 import com.sigpwned.espresso.annotation.Generated;
 import com.sigpwned.espresso.util.Beans;
 
+/**
+ * A wrapper for a {@link Field} that is part of the physical implementation of a logical property.
+ */
 public class BeanField implements BeanElement {
   private final Field field;
 
@@ -26,25 +29,38 @@ public class BeanField implements BeanElement {
     return getField().getGenericType();
   }
 
+  @Override
   public boolean isGettable() {
     return Modifier.isPublic(getField().getModifiers());
   }
 
+  @Override
   public boolean isSettable() {
     return Modifier.isPublic(getField().getModifiers());
   }
 
-  public Object get(Object instance) throws IllegalArgumentException, IllegalAccessException {
+  @Override
+  public Object get(Object instance) {
     if (!isGettable())
       throw new UnsupportedOperationException();
-    return getField().get(instance);
+    try {
+      return getField().get(instance);
+    } catch (IllegalAccessException e) {
+      // We checked that this is public. This should never happen.
+      throw new AssertionError("field is not accessible", e);
+    }
   }
 
-  public void set(Object instance, Object value)
-      throws IllegalArgumentException, IllegalAccessException {
+  @Override
+  public void set(Object instance, Object value) {
     if (!isSettable())
       throw new UnsupportedOperationException();
-    getField().set(instance, value);
+    try {
+      getField().set(instance, value);
+    } catch (IllegalAccessException e) {
+      // We checked that this is public. This should never happen.
+      throw new AssertionError("field is not accessible", e);
+    }
   }
 
   public Field getField() {

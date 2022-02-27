@@ -7,6 +7,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utility methods for processing classes, fields, and methods using reflection.
+ */
 public final class Reflection {
   private Reflection() {}
 

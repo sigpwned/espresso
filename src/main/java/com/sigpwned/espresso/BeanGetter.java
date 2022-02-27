@@ -7,6 +7,9 @@ import java.util.Objects;
 import com.sigpwned.espresso.annotation.Generated;
 import com.sigpwned.espresso.util.Beans;
 
+/**
+ * A wrapper for a getter method that is part of the physical implementation of a logical property.
+ */
 public class BeanGetter implements BeanElement {
   private final Method method;
 
@@ -28,12 +31,16 @@ public class BeanGetter implements BeanElement {
     return getMethod().getGenericReturnType();
   }
 
-  public Object apply(Object instance)
-      throws InvocationTargetException {
-        try {
+  @Override
+  public boolean isGettable() {
+    return true;
+  }
+
+  @Override
+  public Object get(Object instance) throws InvocationTargetException {
+    try {
       return getMethod().invoke(instance);
-    }
-    catch(IllegalAccessException e) {
+    } catch (IllegalAccessException e) {
       // We've ensured that the method is public. This should never happen.
       throw new AssertionError("getter is not accessible", e);
     }

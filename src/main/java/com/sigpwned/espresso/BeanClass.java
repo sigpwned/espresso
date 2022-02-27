@@ -29,7 +29,8 @@ import com.sigpwned.espresso.util.Reflection;
 
 /**
  * A {@link Class}-like object for Java Bean implementations. It contains all of the required
- * "reflection" methods for scanning a candidate Java Bean class and manipulating instances of same.
+ * methods for scanning a candidate Java Bean class, reading its metadata, and manipulating
+ * instances of same.
  */
 public class BeanClass implements Iterable<BeanProperty> {
   private static final Logger LOGGER = LoggerFactory.getLogger(BeanClass.class);
@@ -52,6 +53,8 @@ public class BeanClass implements Iterable<BeanProperty> {
    * Scans a class to create a new {@code BeanClass}. Successfully parsed {@link BeanClass} objects
    * are placed into a cache to improve future performance. Must be a visible, concrete, non-void,
    * non-primitive, non-array class with a default constructor
+   * 
+   * @throws IllegalArgumentException if the given {@code Class} is not valid
    */
   public static BeanClass scan(Class<?> rawType) {
     BeanClass cached = CACHE.get(rawType);
@@ -285,10 +288,16 @@ public class BeanClass implements Iterable<BeanProperty> {
     return getProperties().size();
   }
 
+  /**
+   * Returns an {@link Iterator} of the properties defined by this {@code BeanClass}.
+   */
   public Iterator<BeanProperty> iterator() {
     return getProperties().iterator();
   }
 
+  /**
+   * Returns a {@link Stream} of the properties defined by this {@code BeanClass}.
+   */
   public Stream<BeanProperty> stream() {
     return getProperties().stream();
   }

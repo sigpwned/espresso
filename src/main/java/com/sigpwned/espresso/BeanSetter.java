@@ -7,8 +7,11 @@ import java.util.Objects;
 import com.sigpwned.espresso.annotation.Generated;
 import com.sigpwned.espresso.util.Beans;
 
+/**
+ * A wrapper for a setter method that is part of the physical implementation of a logical property.
+ */
 public class BeanSetter implements BeanElement {
-  private final Method method;
+  private final Method method;  
 
   public BeanSetter(Method method) {
     if (!Beans.isBeanSetter(method))
@@ -28,7 +31,13 @@ public class BeanSetter implements BeanElement {
     return getMethod().getGenericParameterTypes()[0];
   }
 
-  public void apply(Object instance, Object value) throws InvocationTargetException {
+  @Override
+  public boolean isSettable() {
+    return true;
+  }
+
+  @Override
+  public void set(Object instance, Object value) throws InvocationTargetException {
     try {
       getMethod().invoke(instance, value);
     } catch (IllegalAccessException e) {

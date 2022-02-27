@@ -4,6 +4,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+/**
+ * Utility methods for scanning beans
+ */
 public final class Beans {
   private Beans() {}
 
@@ -69,13 +72,5 @@ public final class Beans {
   public static boolean isBeanField(Field field) {
     return Character.isLowerCase(field.getName().charAt(0))
         && !Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers());
-  }
-
-  public static String upperCamelToLowerCamel(String s) {
-    return Character.toLowerCase(s.charAt(0)) + s.substring(1, s.length());
-  }
-
-  public static String lowerCamelToUpperCamel(String s) {
-    return Character.toUpperCase(s.charAt(0)) + s.substring(1, s.length());
   }
 }
