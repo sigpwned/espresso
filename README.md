@@ -1,6 +1,6 @@
 # ESPRESSO
 
-Espresso is a library of streamlined Java Beans for modern Java.
+Espresso is a library of streamlined Java Beans for Java version 8 or higher.
 
 ## Goals
 

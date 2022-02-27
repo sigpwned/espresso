@@ -39,7 +39,7 @@ public class BeanClass implements Iterable<BeanProperty> {
           .orElse(100);
 
   /* default */ static final Map<Class<?>, BeanClass> CACHE =
-      synchronizedMap(new LinkedHashMap<>() {
+      synchronizedMap(new LinkedHashMap<Class<?>, BeanClass>() {
         private static final long serialVersionUID = 5830101232146989304L;
 
         @Override
