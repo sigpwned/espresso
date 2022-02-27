@@ -44,7 +44,7 @@ public class BeanClass implements Iterable<BeanProperty> {
 
         @Override
         protected boolean removeEldestEntry(Map.Entry<Class<?>, BeanClass> eldest) {
-          return size() >= BEAN_CLASS_CACHE_SIZE;
+          return super.size() >= BEAN_CLASS_CACHE_SIZE;
         }
       });
 
@@ -141,7 +141,8 @@ public class BeanClass implements Iterable<BeanProperty> {
       } else if (propertyFields.size() == 1) {
         propertyField = propertyFields.get(0);
       } else {
-        LOGGER.debug("Ignoring property {} because of multiple conflicting fields with same name");
+        LOGGER.debug("Ignoring property {} because of multiple conflicting fields with same name",
+            propertyName);
         propertyField = null;
         ignored = true;
       }
@@ -184,7 +185,11 @@ public class BeanClass implements Iterable<BeanProperty> {
         }
       }
 
-      if (ignored == false) {
+      if (ignored) {
+        LOGGER.debug(
+            "Ignoring property {} because of conflicting types among field, getter, and setter",
+            propertyName);
+      } else {
         List<BeanElement> propertyElements = new ArrayList<>(3);
         if (propertyField != null)
           propertyElements.add(propertyField);
@@ -207,10 +212,6 @@ public class BeanClass implements Iterable<BeanProperty> {
             LOGGER.debug("Ignoring property {} because it is not both gettable and settable",
                 propertyName);
           }
-        } else {
-          LOGGER.debug(
-              "Ignoring property {} because of conflicting types among field, getter, and setter",
-              propertyName);
         }
       }
     }
@@ -252,10 +253,7 @@ public class BeanClass implements Iterable<BeanProperty> {
       throw new AssertionError("could not instantiate class", e);
     } catch (IllegalAccessException e) {
       // We check that the class and constructor are visible. This should never happen.
-      throw new AssertionError("could not instantiate class", e);
-    } catch (IllegalArgumentException e) {
-      // We don't give any arguments. This should never happen.
-      throw new AssertionError("could not instantiate class", e);
+      throw new AssertionError("could not access constructor", e);
     }
   }
 
