@@ -5,7 +5,7 @@
     <artifactId>espresso</artifactId>
     <version>0.0.0-SNAPSHOT</version>
     <name>espresso</name>
-    <description>Simple Java Beans for Modern Java</description>
+    <description>Streamlined Java Beans for Modern Java</description>
     <url>https://github.com/sigpwned/espresso</url>
     <packaging>jar</packaging>
 
