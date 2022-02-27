@@ -9,7 +9,7 @@ Espresso is a library of streamlined Java Beans for Java version 8 or higher.
 ## Non-Goals
 
 * Create a general Java beans framework other libraries can use to manipulate Java Beans, e.g. [Java Beans](https://docs.oracle.com/en/java/javase/11/docs/api/java.desktop/java/beans/Beans.html) and [Apache Commons BeanUtils](https://commons.apache.org/proper/commons-beanutils/)
-* Create a general reflections framework for assisting in reflecitons tasks, e.g. [reflections](https://github.com/ronmamo/reflections).
+* Create a general reflections framework for assisting in reflecitons tasks, e.g. [reflections](https://github.com/ronmamo/reflections)
 
 ## Usage
 
@@ -18,7 +18,7 @@ Espresso is a library of streamlined Java Beans for Java version 8 or higher.
     BeanClass bc;
     try {
         bc = BeanClass.scan(Example.class);
-	// The given class was successfully parsed into a bean class!
+        // The given class was successfully parsed into a bean class!
     }
     catch(IllegalArgumentException e) {
         // The given class cannot be parsed as a bean class.
@@ -30,12 +30,12 @@ Espresso is a library of streamlined Java Beans for Java version 8 or higher.
         private String value;
 
         public String getValue() {
-	    return value;
-	}
+            return value;
+        }
 
         public void setValue(String value) {
-	    this.value = value;
-	}
+            this.value = value;
+        }
     }
 
     BeanClass bc=BeanClass.scan(Example.class);
