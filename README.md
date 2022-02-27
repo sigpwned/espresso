@@ -13,7 +13,7 @@ Provide a high-level library that makes it easy to:
 ## Non-Goals
 
 * Create a low-level library to help applications roll their own bean processing capabilities. Plenty of libraries already do that well, e.g. [Java Beans](https://docs.oracle.com/en/java/javase/11/docs/api/java.desktop/java/beans/Beans.html) and [Apache Commons BeanUtils](https://commons.apache.org/proper/commons-beanutils/).
-* Create a general-purpose reflections library for assisting in reflecitons tasks. Plenty of libraries already do that well, e.g. [reflections](https://github.com/ronmamo/reflections).
+* Create a general-purpose reflections library for assisting in reflections tasks. Plenty of libraries already do that well, e.g. [reflections](https://github.com/ronmamo/reflections).
 
 ## Usage
 
