@@ -55,7 +55,7 @@ Espresso adds the following limitations out of practicality:
     }
 
     for(BeanProperty p : bc)
-      System.out.println("Example has a property named "+p.getName()+" of type "+p.getGenericType());
+        System.out.println("Example has a property named "+p.getName()+" of type "+p.getGenericType());
 
 ### Create and manipulate a bean instance
 
