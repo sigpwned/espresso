@@ -17,11 +17,11 @@ Provide a high-level library that makes it easy to:
 
 ## What is a JavaBean?
 
-A JavaBean is a Java class that adheres to [the JavaBean spec](https://www.oracle.com/java/technologies/javase/javabeans-spec.html). In [short](https://stackoverflow.com/questions/3295496/what-is-a-javabean-exactly/3295517#3295517):
+A JavaBean is a Java class that adheres to [the JavaBean spec](https://www.oracle.com/java/technologies/javase/javabeans-spec.html). In [short](https://stackoverflow.com/questions/3295496/what-is-a-javabean-exactly/3295517#3295517), a JavaBean is any Java class such that:
 
-* All properties are private (use getters/setters)
-* A public no-argument constructor
-* Implements Serializable.
+* All its properties are private, with public getters and setters
+* It has a public no-argument constructor
+* It implements Serializable.
 
 ## How does Espresso implement the JavaBean spec?
 
