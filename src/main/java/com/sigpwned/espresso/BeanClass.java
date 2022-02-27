@@ -27,6 +27,10 @@ import com.sigpwned.espresso.annotation.Generated;
 import com.sigpwned.espresso.util.Beans;
 import com.sigpwned.espresso.util.Reflection;
 
+/**
+ * A {@link Class}-like object for Java Bean implementations. It contains all of the required
+ * "reflection" methods for scanning a candidate Java Bean class and manipulating instances of same.
+ */
 public class BeanClass implements Iterable<BeanProperty> {
   private static final Logger LOGGER = LoggerFactory.getLogger(BeanClass.class);
 
@@ -34,18 +38,20 @@ public class BeanClass implements Iterable<BeanProperty> {
       Optional.ofNullable(System.getenv("ESPRESSO_BEAN_CLASS_CACHE_SIZE")).map(Integer::parseInt)
           .orElse(100);
 
-  /* default */ static final Map<Class<?>, BeanClass> CACHE = synchronizedMap(new LinkedHashMap<>() {
-    private static final long serialVersionUID = 5830101232146989304L;
+  /* default */ static final Map<Class<?>, BeanClass> CACHE =
+      synchronizedMap(new LinkedHashMap<>() {
+        private static final long serialVersionUID = 5830101232146989304L;
 
-    @Override
-    protected boolean removeEldestEntry(Map.Entry<Class<?>, BeanClass> eldest) {
-      return size() >= BEAN_CLASS_CACHE_SIZE;
-    }
-  });
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<Class<?>, BeanClass> eldest) {
+          return size() >= BEAN_CLASS_CACHE_SIZE;
+        }
+      });
 
   /**
-   * Must be a visible, concrete, non-void, non-primitive, non-array class with a default
-   * constructor
+   * Scans a class to create a new {@code BeanClass}. Successfully parsed {@link BeanClass} objects
+   * are placed into a cache to improve future performance. Must be a visible, concrete, non-void,
+   * non-primitive, non-array class with a default constructor
    */
   public static BeanClass scan(Class<?> rawType) {
     BeanClass cached = CACHE.get(rawType);
@@ -224,6 +230,9 @@ public class BeanClass implements Iterable<BeanProperty> {
     this.properties = new ArrayList<>();
   }
 
+  /**
+   * The raw type that was scanned to create this {@code BeanClass}.
+   */
   public Class<?> getRawType() {
     return rawType;
   }
@@ -232,6 +241,9 @@ public class BeanClass implements Iterable<BeanProperty> {
     return defaultConstructor;
   }
 
+  /**
+   * Creates a new {@link BeanInstance} from this {@code BeanClass}.
+   */
   public BeanInstance newInstance() throws InvocationTargetException {
     try {
       return new BeanInstance(this, getDefaultConstructor().newInstance());
@@ -247,18 +259,30 @@ public class BeanClass implements Iterable<BeanProperty> {
     }
   }
 
+  /**
+   * The names of all properties defined by this {@code BeanClass}.
+   */
   public Set<String> getPropertyNames() {
     return getProperties().stream().map(BeanProperty::getName).collect(toSet());
   }
 
+  /**
+   * Gets the named property, if it exists.
+   */
   public Optional<BeanProperty> getProperty(String name) {
     return getProperties().stream().filter(p -> p.getName().equals(name)).findFirst();
   }
 
+  /**
+   * Gets the indexed property.
+   */
   public BeanProperty get(int index) {
     return getProperties().get(index);
   }
 
+  /**
+   * The total number of properties defined by this {@code BeanClass}.
+   */
   public int size() {
     return getProperties().size();
   }
@@ -280,7 +304,7 @@ public class BeanClass implements Iterable<BeanProperty> {
       throw new IllegalArgumentException("property belongs to another class");
     properties.add(property);
   }
-  
+
   @Override
   @Generated
   public int hashCode() {
