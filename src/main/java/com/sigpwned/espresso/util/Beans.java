@@ -17,21 +17,29 @@ public final class Beans {
    * 
    * <ul>
    * <li>It is public</li>
-   * <li>It is not synthetic</li>
    * <li>It is not static</li>
-   * <li>It is not native</li>
    * <li>Its name starts with "get" followed by an uppercase letter</li>
+   * <li>If it's a boolean property, the name may also start with "is" followed by an uppercase letter</li>
    * <li>Its return type is not void</li>
    * <li>It takes no parameters</li>
    * </ul>
    */
   public static boolean isBeanGetter(Method method) {
-    return !method.isSynthetic() && method.getName().length() > 3
-        && method.getName().startsWith("get")
-        && Character.isUpperCase(method.getName().codePointAt(3))
-        && !Modifier.isStatic(method.getModifiers()) && Modifier.isPublic(method.getModifiers())
-        && !Modifier.isNative(method.getModifiers())
-        && !method.getGenericReturnType().equals(void.class) && method.getParameterCount() == 0;
+    if (!Modifier.isStatic(method.getModifiers()) && Modifier.isPublic(method.getModifiers())
+        && !method.getGenericReturnType().equals(void.class) && method.getParameterCount() == 0) {
+      if (method.getName().length() > 3 && method.getName().startsWith("get")
+          && Character.isUpperCase(method.getName().codePointAt(3))) {
+        return true;
+      } else if (method.getGenericReturnType().equals(boolean.class)
+          && method.getName().length() > 2 && method.getName().startsWith("is")
+          && Character.isUpperCase(method.getName().codePointAt(2))) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -41,20 +49,16 @@ public final class Beans {
    * 
    * <ul>
    * <li>It is public</li>
-   * <li>It is not synthetic</li>
    * <li>It is not static</li>
-   * <li>It is not native</li>
    * <li>Its name starts with "set" followed by an uppercase letter</li>
    * <li>Its return type is void</li>
    * <li>It takes one parameter</li>
    * </ul>
    */
   public static boolean isBeanSetter(Method method) {
-    return !method.isSynthetic() && method.getName().length() > 3
-        && method.getName().startsWith("set")
+    return method.getName().length() > 3 && method.getName().startsWith("set")
         && Character.isUpperCase(method.getName().codePointAt(3))
         && !Modifier.isStatic(method.getModifiers()) && Modifier.isPublic(method.getModifiers())
-        && !Modifier.isNative(method.getModifiers())
         && method.getGenericReturnType().equals(void.class) && method.getParameterCount() == 1;
   }
 

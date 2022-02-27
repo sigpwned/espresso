@@ -360,7 +360,7 @@ public class BeanClassTest {
 
   public static class ScanWithCovariantGetterTestParent {
     public Number foo;
-    
+
     public Number getFoo() {
       return null;
     }
@@ -385,7 +385,7 @@ public class BeanClassTest {
 
   public static class ScanWithOverrideGetterTestParent {
     public Number foo;
-    
+
     public Number getFoo() {
       return null;
     }
@@ -406,7 +406,7 @@ public class BeanClassTest {
     BeanClass bc = BeanClass.scan(ScanWithOverrideGetterTestChild.class);
 
     assertThat(bc.size(), is(1));
-    
+
     BeanProperty x = bc.getProperty("foo").get();
     assertThat(x.getName(), is("foo"));
     assertThat(x.getGenericType(), is((Type) Number.class));
@@ -414,7 +414,7 @@ public class BeanClassTest {
 
   public static class ScanWithCovariantSetterTestParent {
     public Number foo;
-    
+
     public void setFoo(Number foo) {}
   }
 
@@ -434,15 +434,13 @@ public class BeanClassTest {
 
   public static class ScanWithOverrideSetterTestParent {
     public Number foo;
-    
-    public void setFoo(Number foo) {
-    }
+
+    public void setFoo(Number foo) {}
   }
 
   public static class ScanWithOverrideSetterTestChild extends ScanWithOverrideSetterTestParent {
     @Override
-    public void setFoo(Number foo) {
-    }
+    public void setFoo(Number foo) {}
   }
 
   /**
@@ -453,7 +451,7 @@ public class BeanClassTest {
     BeanClass bc = BeanClass.scan(ScanWithOverrideSetterTestChild.class);
 
     assertThat(bc.size(), is(1));
-    
+
     BeanProperty x = bc.getProperty("foo").get();
     assertThat(x.getName(), is("foo"));
     assertThat(x.getGenericType(), is((Type) Number.class));
@@ -487,8 +485,8 @@ public class BeanClassTest {
   public void getTest() {
     BeanClass bc = BeanClass.scan(Example.class);
 
-    Set<String> names=new HashSet<>();
-    for(int i=0;i<bc.size();i++)
+    Set<String> names = new HashSet<>();
+    for (int i = 0; i < bc.size(); i++)
       names.add(bc.get(i).getName());
 
     assertThat(names, is(singleton("x")));
@@ -499,6 +497,25 @@ public class BeanClassTest {
     BeanClass bc = BeanClass.scan(Example.class);
 
     assertThat(bc.getRawType().getName(), is(Example.class.getName()));
+  }
+
+  public static class BooleanExample {
+    public boolean foo = true;
+
+    public boolean isFoo() {
+      return false;
+    }
+  }
+
+  @Test
+  public void booleanIsGetterTest() {
+    BeanClass bc = BeanClass.scan(BooleanExample.class);
+    
+    assertThat(bc.size(), is(1));
+
+    BeanProperty foo = bc.getProperty("foo").get();
+    assertThat(foo.getName(), is("foo"));
+    assertThat(foo.getGenericType(), is((Type) boolean.class));
   }
 
   /**

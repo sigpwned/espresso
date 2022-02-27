@@ -22,8 +22,16 @@ public class BeanGetter implements BeanElement {
   @Override
   public String getName() {
     String methodName = getMethod().getName();
-    return Character.toLowerCase(methodName.charAt(3))
-        + methodName.substring(4, methodName.length());
+    if (methodName.startsWith("get")) {
+      return Character.toLowerCase(methodName.charAt(3))
+          + methodName.substring(4, methodName.length());
+    } else if (methodName.startsWith("is")) {
+      return Character.toLowerCase(methodName.charAt(2))
+          + methodName.substring(3, methodName.length());
+    } else {
+      // I have no idea what this method name is.
+      throw new AssertionError("unrecognized getter name " + getName());
+    }
   }
 
   @Override

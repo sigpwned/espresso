@@ -58,8 +58,8 @@ public class BeanInstanceTest {
     assertThat(instance.get(alpha), is(hello));
 
     assertThat(instance.getInstance(), is(new ExampleBean().withAlpha(hello)));
-    
-    assertThat(instance.toString(), is("ExampleBean ["+alpha+"="+hello+"]"));
+
+    assertThat(instance.toString(), is("ExampleBean [" + alpha + "=" + hello + "]"));
   }
 
   public static class ExampleChildBean extends ExampleBean {
@@ -121,53 +121,53 @@ public class BeanInstanceTest {
 
     assertThat(instance.getInstance(), is(new ExampleChildBean().withBravo(five).withAlpha(hello)));
   }
-  
+
   public static class PreferGetterTest {
     public String alpha;
-    
+
     public String getAlpha() {
       return "bar";
     }
   }
-  
+
   @Test
   public void preferGetterTest() throws InvocationTargetException {
-    final String alpha="alpha";
-    final String foo="foo";
-    final String bar="bar";
-    
-    PreferGetterTest instance=new PreferGetterTest();
+    final String alpha = "alpha";
+    final String foo = "foo";
+    final String bar = "bar";
+
+    PreferGetterTest instance = new PreferGetterTest();
     instance.alpha = foo;
-    
+
     assertThat(BeanInstance.wrap(instance).get(alpha), is(bar));
   }
-  
+
   public static class PreferSetterTest {
     public String alpha;
-    
+
     public void setAlpha(String alpha) {
       this.alpha = "bar";
     }
   }
-  
+
   @Test
   public void preferSetterTest() throws InvocationTargetException {
-    final String alpha="alpha";
-    final String foo="foo";
-    final String bar="bar";
-    
-    PreferGetterTest instance=new PreferGetterTest();
-    
+    final String alpha = "alpha";
+    final String foo = "foo";
+    final String bar = "bar";
+
+    PreferGetterTest instance = new PreferGetterTest();
+
     BeanInstance.wrap(instance).set(alpha, foo);
-    
+
     assertThat(instance.getAlpha(), is(bar));
   }
-  
-  @Test(expected=NullPointerException.class)
+
+  @Test(expected = NullPointerException.class)
   public void nullTest() {
     BeanInstance.wrap(null);
   }
-  
+
   public static class OtherBean {
     private String bravo;
 
@@ -206,45 +206,45 @@ public class BeanInstanceTest {
       return "OtherBean [bravo=" + bravo + "]";
     }
   }
-  
-  @Test(expected=IllegalArgumentException.class)
+
+  @Test(expected = IllegalArgumentException.class)
   public void getMismatchTest() throws InvocationTargetException {
-    BeanClass a=BeanClass.scan(ExampleBean.class);
-    BeanClass b=BeanClass.scan(OtherBean.class);
-    
-    BeanInstance x=a.newInstance();
-    
+    BeanClass a = BeanClass.scan(ExampleBean.class);
+    BeanClass b = BeanClass.scan(OtherBean.class);
+
+    BeanInstance x = a.newInstance();
+
     x.get(b.getProperty("bravo").get());
   }
-  
-  @Test(expected=IllegalArgumentException.class)
+
+  @Test(expected = IllegalArgumentException.class)
   public void getNoSuchPropertyTest() throws InvocationTargetException {
-    BeanClass a=BeanClass.scan(ExampleBean.class);
-    
-    BeanInstance x=a.newInstance();
-    
+    BeanClass a = BeanClass.scan(ExampleBean.class);
+
+    BeanInstance x = a.newInstance();
+
     x.get("bravo");
   }
-  
-  @Test(expected=IllegalArgumentException.class)
+
+  @Test(expected = IllegalArgumentException.class)
   public void setMismatchTest() throws InvocationTargetException {
-    BeanClass a=BeanClass.scan(ExampleBean.class);
-    BeanClass b=BeanClass.scan(OtherBean.class);
-    
-    BeanInstance x=a.newInstance();
-    
+    BeanClass a = BeanClass.scan(ExampleBean.class);
+    BeanClass b = BeanClass.scan(OtherBean.class);
+
+    BeanInstance x = a.newInstance();
+
     x.set(b.getProperty("bravo").get(), "value");
   }
-  
-  @Test(expected=IllegalArgumentException.class)
+
+  @Test(expected = IllegalArgumentException.class)
   public void setNoSuchPropertyTest() throws InvocationTargetException {
-    BeanClass a=BeanClass.scan(ExampleBean.class);
-    
-    BeanInstance x=a.newInstance();
-    
+    BeanClass a = BeanClass.scan(ExampleBean.class);
+
+    BeanInstance x = a.newInstance();
+
     x.set("bravo", "value");
   }
-  
+
   public static class NoAccessorsBean {
     public String alpha;
 
@@ -270,20 +270,37 @@ public class BeanInstanceTest {
       return "NoAccessorsBean [alpha=" + alpha + "]";
     }
   }
-  
+
   @Test
   public void noAccessorsTest() throws InvocationTargetException {
-    final String alpha="alpha";
-    final String value="value";
-    
-    BeanClass a=BeanClass.scan(NoAccessorsBean.class);
-    
-    BeanInstance x=a.newInstance();
-    
+    final String alpha = "alpha";
+    final String value = "value";
+
+    BeanClass a = BeanClass.scan(NoAccessorsBean.class);
+
+    BeanInstance x = a.newInstance();
+
     x.set(alpha, value);
-    
-    String gotten=(String) x.get(alpha);
-    
+
+    String gotten = (String) x.get(alpha);
+
     assertThat(gotten, is(value));
+  }
+
+  public static class BooleanExample {
+    public boolean foo = true;
+
+    public boolean isFoo() {
+      return false;
+    }
+  }
+
+  @Test
+  public void booleanIsGetterTest() throws InvocationTargetException {
+    BeanClass bc = BeanClass.scan(BooleanExample.class);
+
+    BeanInstance x = bc.newInstance();
+    
+    assertThat(x.get("foo"), is(false));
   }
 }
