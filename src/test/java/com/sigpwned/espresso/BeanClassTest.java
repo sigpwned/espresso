@@ -1,9 +1,12 @@
 package com.sigpwned.espresso;
 
 import static java.util.Collections.singleton;
+import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import java.lang.reflect.Type;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.Test;
 
 public class BeanClassTest {
@@ -49,8 +52,7 @@ public class BeanClassTest {
    */
   @Test
   public void scanPublicStaticFieldWithoutGetterWithoutSetterTest() {
-    BeanClass bc =
-        BeanClass.scan(ScanPublicStaticFieldWithoutGetterWithoutSetterTestClass.class);
+    BeanClass bc = BeanClass.scan(ScanPublicStaticFieldWithoutGetterWithoutSetterTestClass.class);
     assertThat(bc.size(), is(0));
   }
 
@@ -269,83 +271,83 @@ public class BeanClassTest {
     assertThat(y.getName(), is("y"));
     assertThat(y.getGenericType(), is((Type) String.class));
   }
-  
+
   /**
    * We should fail to scan a primitive class
    */
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void scanPrimitiveTest() {
     BeanClass.scan(int.class);
   }
-  
+
   /**
    * We should fail to scan the void class
    */
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void scanVoidTest() {
     BeanClass.scan(void.class);
   }
-  
+
   /**
    * We should fail to scan an array class
    */
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void scanArrayTest() {
     BeanClass.scan(int[].class);
   }
-  
+
   public static abstract class ScanAbstractTest {
     public int x;
   }
-  
+
   /**
    * We should fail to scan an abstract class
    */
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void scanAbstractTest() {
     BeanClass.scan(ScanAbstractTest.class);
   }
-  
+
   public static class ScanWithoutDefaultConstructorTest {
     public ScanWithoutDefaultConstructorTest(int x) {
       this.x = x;
     }
-    
+
     public int x;
   }
-  
+
   /**
    * We should fail to scan an abstract class
    */
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void scanWithoutDefaultConstructorTest() {
     BeanClass.scan(ScanWithoutDefaultConstructorTest.class);
   }
-  
+
   public static class ScanWithPrivateDefaultConstructorTest {
     private ScanWithPrivateDefaultConstructorTest(int x) {
       this.x = x;
     }
-    
+
     public int x;
   }
-  
+
   /**
    * We should fail to scan an abstract class
    */
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void scanWithPirvateDefaultConstructorTest() {
     BeanClass.scan(ScanWithPrivateDefaultConstructorTest.class);
   }
-  
+
   public static class ScanWithFieldHidingTestParent {
     public int x;
   }
-  
+
   public static class ScanWithFieldHidingTestChild extends ScanWithFieldHidingTestParent {
     public int x;
   }
-  
+
   /**
    * We should fail to scan in a field with multiple definitions.
    */
@@ -355,20 +357,22 @@ public class BeanClassTest {
 
     assertThat(bc.size(), is(0));
   }
-  
+
   public static class ScanWithCovariantGetterTestParent {
+    public Number foo;
+    
     public Number getFoo() {
       return null;
     }
   }
-  
+
   public static class ScanWithCovariantGetterTestChild extends ScanWithCovariantGetterTestParent {
     @Override
     public Integer getFoo() {
       return null;
     }
   }
-  
+
   /**
    * We should fail to scan in a field with multiple definitions.
    */
@@ -378,17 +382,46 @@ public class BeanClassTest {
 
     assertThat(bc.size(), is(0));
   }
-  
+
+  public static class ScanWithOverrideGetterTestParent {
+    public Number foo;
+    
+    public Number getFoo() {
+      return null;
+    }
+  }
+
+  public static class ScanWithOverrideGetterTestChild extends ScanWithOverrideGetterTestParent {
+    @Override
+    public Number getFoo() {
+      return null;
+    }
+  }
+
+  /**
+   * We should fail to scan in a field with multiple definitions.
+   */
+  @Test
+  public void scanWithOverrideGetterTest() {
+    BeanClass bc = BeanClass.scan(ScanWithOverrideGetterTestChild.class);
+
+    assertThat(bc.size(), is(1));
+    
+    BeanProperty x = bc.getProperty("foo").get();
+    assertThat(x.getName(), is("foo"));
+    assertThat(x.getGenericType(), is((Type) Number.class));
+  }
+
   public static class ScanWithCovariantSetterTestParent {
-    public void setFoo(Number x) {
-    }
+    public Number foo;
+    
+    public void setFoo(Number foo) {}
   }
-  
+
   public static class ScanWithCovariantSetterTestChild extends ScanWithCovariantSetterTestParent {
-    public void setFoo(Integer x) {
-    }
+    public void setFoo(Integer foo) {}
   }
-  
+
   /**
    * We should fail to scan in a field with multiple definitions.
    */
@@ -398,32 +431,101 @@ public class BeanClassTest {
 
     assertThat(bc.size(), is(0));
   }
-  
+
+  public static class ScanWithOverrideSetterTestParent {
+    public Number foo;
+    
+    public void setFoo(Number foo) {
+    }
+  }
+
+  public static class ScanWithOverrideSetterTestChild extends ScanWithOverrideSetterTestParent {
+    @Override
+    public void setFoo(Number foo) {
+    }
+  }
+
+  /**
+   * We should fail to scan in a field with multiple definitions.
+   */
+  @Test
+  public void scanWithOverrideSetterTest() {
+    BeanClass bc = BeanClass.scan(ScanWithOverrideSetterTestChild.class);
+
+    assertThat(bc.size(), is(1));
+    
+    BeanProperty x = bc.getProperty("foo").get();
+    assertThat(x.getName(), is("foo"));
+    assertThat(x.getGenericType(), is((Type) Number.class));
+  }
+
+  public static class Example {
+    public int x;
+  }
+
+  @Test
+  public void iteratorTest() {
+    BeanClass bc = BeanClass.scan(Example.class);
+
+    Set<String> names = new HashSet<>();
+    for (BeanProperty p : bc)
+      names.add(p.getName());
+
+    assertThat(names, is(singleton("x")));
+  }
+
+  @Test
+  public void streamTest() {
+    BeanClass bc = BeanClass.scan(Example.class);
+
+    Set<String> names = bc.stream().map(BeanProperty::getName).collect(toSet());
+
+    assertThat(names, is(singleton("x")));
+  }
+
+  @Test
+  public void getTest() {
+    BeanClass bc = BeanClass.scan(Example.class);
+
+    Set<String> names=new HashSet<>();
+    for(int i=0;i<bc.size();i++)
+      names.add(bc.get(i).getName());
+
+    assertThat(names, is(singleton("x")));
+  }
+
+  @Test
+  public void rawTypeTest() {
+    BeanClass bc = BeanClass.scan(Example.class);
+
+    assertThat(bc.getRawType().getName(), is(Example.class.getName()));
+  }
+
   /**
    * We should return a equals object for the same class if not in the cache
    */
   @Test
   public void cacheBustTest() {
-    BeanClass scan1=BeanClass.scan(SmokeTest.class);
-    
+    BeanClass scan1 = BeanClass.scan(SmokeTest.class);
+
     BeanClass.CACHE.clear();
-    
-    BeanClass scan2=BeanClass.scan(SmokeTest.class);
-    
+
+    BeanClass scan2 = BeanClass.scan(SmokeTest.class);
+
     assertThat(scan2, is(scan1));
   }
-  
+
   /**
    * We should return a equals object for the same class if in the cache
    */
   @Test
   public void cacheTest() {
     BeanClass.CACHE.clear();
-    
-    BeanClass scan1=BeanClass.scan(SmokeTest.class);
-    
-    BeanClass scan2=BeanClass.scan(SmokeTest.class);
-    
+
+    BeanClass scan1 = BeanClass.scan(SmokeTest.class);
+
+    BeanClass scan2 = BeanClass.scan(SmokeTest.class);
+
     assertThat(scan2, is(scan1));
   }
 }

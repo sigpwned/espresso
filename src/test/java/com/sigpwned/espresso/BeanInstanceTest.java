@@ -58,6 +58,8 @@ public class BeanInstanceTest {
     assertThat(instance.get(alpha), is(hello));
 
     assertThat(instance.getInstance(), is(new ExampleBean().withAlpha(hello)));
+    
+    assertThat(instance.toString(), is("ExampleBean ["+alpha+"="+hello+"]"));
   }
 
   public static class ExampleChildBean extends ExampleBean {
@@ -159,5 +161,129 @@ public class BeanInstanceTest {
     BeanInstance.wrap(instance).set(alpha, foo);
     
     assertThat(instance.getAlpha(), is(bar));
+  }
+  
+  @Test(expected=NullPointerException.class)
+  public void nullTest() {
+    BeanInstance.wrap(null);
+  }
+  
+  public static class OtherBean {
+    private String bravo;
+
+    public String getBravo() {
+      return bravo;
+    }
+
+    public void setBravo(String bravo) {
+      this.bravo = bravo;
+    }
+
+    public OtherBean withBravo(String bravo) {
+      setBravo(bravo);
+      return this;
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(bravo);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      OtherBean other = (OtherBean) obj;
+      return Objects.equals(bravo, other.bravo);
+    }
+
+    @Override
+    public String toString() {
+      return "OtherBean [bravo=" + bravo + "]";
+    }
+  }
+  
+  @Test(expected=IllegalArgumentException.class)
+  public void getMismatchTest() throws InvocationTargetException {
+    BeanClass a=BeanClass.scan(ExampleBean.class);
+    BeanClass b=BeanClass.scan(OtherBean.class);
+    
+    BeanInstance x=a.newInstance();
+    
+    x.get(b.getProperty("bravo").get());
+  }
+  
+  @Test(expected=IllegalArgumentException.class)
+  public void getNoSuchPropertyTest() throws InvocationTargetException {
+    BeanClass a=BeanClass.scan(ExampleBean.class);
+    
+    BeanInstance x=a.newInstance();
+    
+    x.get("bravo");
+  }
+  
+  @Test(expected=IllegalArgumentException.class)
+  public void setMismatchTest() throws InvocationTargetException {
+    BeanClass a=BeanClass.scan(ExampleBean.class);
+    BeanClass b=BeanClass.scan(OtherBean.class);
+    
+    BeanInstance x=a.newInstance();
+    
+    x.set(b.getProperty("bravo").get(), "value");
+  }
+  
+  @Test(expected=IllegalArgumentException.class)
+  public void setNoSuchPropertyTest() throws InvocationTargetException {
+    BeanClass a=BeanClass.scan(ExampleBean.class);
+    
+    BeanInstance x=a.newInstance();
+    
+    x.set("bravo", "value");
+  }
+  
+  public static class NoAccessorsBean {
+    public String alpha;
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(alpha);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      ExampleBean other = (ExampleBean) obj;
+      return Objects.equals(alpha, other.alpha);
+    }
+
+    @Override
+    public String toString() {
+      return "NoAccessorsBean [alpha=" + alpha + "]";
+    }
+  }
+  
+  @Test
+  public void noAccessorsTest() throws InvocationTargetException {
+    final String alpha="alpha";
+    final String value="value";
+    
+    BeanClass a=BeanClass.scan(NoAccessorsBean.class);
+    
+    BeanInstance x=a.newInstance();
+    
+    x.set(alpha, value);
+    
+    String gotten=(String) x.get(alpha);
+    
+    assertThat(gotten, is(value));
   }
 }
