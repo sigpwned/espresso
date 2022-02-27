@@ -1,5 +1,6 @@
 package com.sigpwned.espresso;
 
+import static java.util.stream.Collectors.toList;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class BeanProperty {
 
   public BeanProperty(BeanClass beanClass, BeanField field, BeanGetter getter, BeanSetter setter) {
     this.beanClass = beanClass;
-    
+
     List<BeanElement> elements = new ArrayList<>(3);
     if (field != null)
       elements.add(field);
@@ -37,13 +38,13 @@ public class BeanProperty {
       throw new IllegalArgumentException("not settable");
 
     // All the element names have to match exactly
-    List<String> names = elements.stream().map(BeanElement::getName).distinct().toList();
+    List<String> names = elements.stream().map(BeanElement::getName).distinct().collect(toList());
     if (names.size() > 1)
       throw new IllegalArgumentException("names mismatch: " + names);
 
     // All of the types have to match exactly
     List<Type> genericTypes =
-        elements.stream().map(BeanElement::getGenericType).distinct().toList();
+        elements.stream().map(BeanElement::getGenericType).distinct().collect(toList());
     if (genericTypes.size() > 1)
       throw new IllegalArgumentException("types mismatch: " + genericTypes);
 
@@ -111,7 +112,7 @@ public class BeanProperty {
     // This should never happen due to checks in constructor
     throw new AssertionError("no field, getter, or setter");
   }
-  
+
   /**
    * @return the beanClass
    */
