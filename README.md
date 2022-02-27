@@ -1,4 +1,4 @@
-# ESPRESSO
+# ESPRESSO [![tests](https://github.com/sigpwned/espresso/actions/workflows/tests.yml/badge.svg)](https://github.com/sigpwned/espresso/actions/workflows/tests.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sigpwned_espresso&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sigpwned_espresso)
 
 Espresso is a library of streamlined Java Beans for Java version 8 or higher.
 
