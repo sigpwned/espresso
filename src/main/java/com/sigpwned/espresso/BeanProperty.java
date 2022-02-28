@@ -2,6 +2,7 @@ package com.sigpwned.espresso;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -71,6 +72,16 @@ public class BeanProperty {
    */
   public Type getGenericType() {
     return getAnyElement().getGenericType();
+  }
+
+  /**
+   * Returns all of the annotations present on any fields, getters, and setters that comprise this
+   * property. Annotations from each individual element will appear in the same order as their
+   * declarations, but there is no guarantee about the order in which each elements' annotations
+   * will appear relative to the other elements.
+   */
+  public List<Annotation> getAnnotations() {
+    return getElements().stream().flatMap(e -> e.getAnnotations().stream()).collect(toList());
   }
 
   /**

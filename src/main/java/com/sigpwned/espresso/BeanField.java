@@ -1,8 +1,11 @@
 package com.sigpwned.espresso;
 
+import static java.util.Arrays.asList;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Objects;
 import com.sigpwned.espresso.annotation.Generated;
 import com.sigpwned.espresso.util.Beans;
@@ -27,6 +30,11 @@ public class BeanField implements BeanElement {
   @Override
   public Type getGenericType() {
     return getField().getGenericType();
+  }
+  
+  @Override
+  public List<Annotation> getAnnotations() {
+    return asList(getField().getAnnotations());
   }
 
   @Override

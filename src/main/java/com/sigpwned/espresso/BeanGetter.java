@@ -1,8 +1,11 @@
 package com.sigpwned.espresso;
 
+import static java.util.Arrays.asList;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Objects;
 import com.sigpwned.espresso.annotation.Generated;
 import com.sigpwned.espresso.util.Beans;
@@ -37,6 +40,11 @@ public class BeanGetter implements BeanElement {
   @Override
   public Type getGenericType() {
     return getMethod().getGenericReturnType();
+  }
+  
+  @Override
+  public List<Annotation> getAnnotations() {
+    return asList(getMethod().getAnnotations());
   }
 
   @Override

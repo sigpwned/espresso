@@ -1,11 +1,19 @@
 package com.sigpwned.espresso;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.Collections.singleton;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 import java.lang.reflect.Type;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.junit.Test;
 
@@ -510,12 +518,68 @@ public class BeanClassTest {
   @Test
   public void booleanIsGetterTest() {
     BeanClass bc = BeanClass.scan(BooleanExample.class);
-    
+
     assertThat(bc.size(), is(1));
 
     BeanProperty foo = bc.getProperty("foo").get();
     assertThat(foo.getName(), is("foo"));
     assertThat(foo.getGenericType(), is((Type) boolean.class));
+  }
+
+  @Retention(RUNTIME)
+  @Target({METHOD, FIELD})
+  public static @interface AnnotationAlpha {
+  }
+
+  @Retention(RUNTIME)
+  @Target({METHOD, FIELD})
+  public static @interface AnnotationBravo {
+  }
+
+  @Retention(RUNTIME)
+  @Target({METHOD, FIELD})
+  public static @interface AnnotationCharlie {
+  }
+
+  public static class AnnotationTest {
+    @AnnotationAlpha
+    public int foo;
+
+    @AnnotationBravo
+    public void setFoo(int foo) {}
+
+    @AnnotationCharlie
+    public int getFoo() {
+      return 0;
+    }
+  }
+
+  @Test
+  public void annotationTest() {
+    BeanClass bc = BeanClass.scan(AnnotationTest.class);
+
+    List<Annotation> annotations = bc.getProperty("foo").get().getAnnotations();
+    
+    assertThat(annotations.size(), is(3));
+    assertThat(annotations, containsInAnyOrder(
+        new AnnotationAlpha() {
+          @Override
+          public Class<? extends Annotation> annotationType() {
+            return AnnotationAlpha.class;
+          }
+        },
+        new AnnotationBravo() {
+          @Override
+          public Class<? extends Annotation> annotationType() {
+            return AnnotationBravo.class;
+          }
+        },
+        new AnnotationCharlie() {
+          @Override
+          public Class<? extends Annotation> annotationType() {
+            return AnnotationCharlie.class;
+          }
+        }));
   }
 
   /**

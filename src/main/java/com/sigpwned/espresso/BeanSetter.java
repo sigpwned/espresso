@@ -1,8 +1,11 @@
 package com.sigpwned.espresso;
 
+import static java.util.Arrays.asList;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Objects;
 import com.sigpwned.espresso.annotation.Generated;
 import com.sigpwned.espresso.util.Beans;
@@ -24,6 +27,11 @@ public class BeanSetter implements BeanElement {
     String methodName = getMethod().getName();
     return Character.toLowerCase(methodName.charAt(3))
         + methodName.substring(4, methodName.length());
+  }
+  
+  @Override
+  public List<Annotation> getAnnotations() {
+    return asList(getMethod().getAnnotations());
   }
 
   @Override

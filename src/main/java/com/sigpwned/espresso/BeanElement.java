@@ -1,7 +1,9 @@
 package com.sigpwned.espresso;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * An abstract representation of a syntactical element that references a logical property, e.g. a
@@ -11,6 +13,8 @@ public interface BeanElement {
   public String getName();
 
   public Type getGenericType();
+  
+  public List<Annotation> getAnnotations();
 
   /**
    * Returns true if this element can read the logical property
