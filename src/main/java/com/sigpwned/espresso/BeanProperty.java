@@ -88,7 +88,7 @@ public class BeanProperty {
    * Attempts to retrieve the value of this property from the given instance. It will prefer to use
    * a getter, if present.
    * 
-   * @throw InvocationTargetException if a getter is invoked and it generates an exception
+   * @throws InvocationTargetException if a getter is invoked and it generates an exception
    * @throws IllegalArgumentException if the given instance is not of the correct type
    */
   public Object get(Object instance) throws InvocationTargetException {
@@ -100,7 +100,7 @@ public class BeanProperty {
    * Attempts to assign the value of this property to the given instance. It will prefer to use a
    * setter, if present.
    * 
-   * @throw InvocationTargetException if a setter is invoked and it generates an exception
+   * @throws InvocationTargetException if a setter is invoked and it generates an exception
    * @throws IllegalArgumentException if either the given instance or the given value is not of the
    *         correct type
    */
