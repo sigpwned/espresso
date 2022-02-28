@@ -37,11 +37,11 @@ public class BeanProperty {
     this.elements = unmodifiableList(elements);
 
     // We should be gettable
-    if (!getElements().stream().anyMatch(BeanElement::isGettable))
+    if (getElements().stream().noneMatch(BeanElement::isGettable))
       throw new IllegalArgumentException("not gettable");
 
     // We should be settable
-    if (!getElements().stream().anyMatch(BeanElement::isSettable))
+    if (getElements().stream().noneMatch(BeanElement::isSettable))
       throw new IllegalArgumentException("not settable");
 
     // All the element names have to match exactly
