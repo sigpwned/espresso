@@ -3,7 +3,7 @@
 
     <groupId>com.sigpwned</groupId>
     <artifactId>espresso</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.0</version>
     <name>espresso</name>
     <description>Streamlined Java Beans for Modern Java</description>
     <url>https://github.com/sigpwned/espresso</url>
@@ -13,7 +13,7 @@
         <connection>scm:git:ssh://git@github.com/sigpwned/espresso.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/sigpwned/espresso.git</developerConnection>
         <url>https://github.com/sigpwned/espresso/tree/main</url>
-      <tag>HEAD</tag>
+      <tag>v0.0.0</tag>
   </scm>
 
     <developers>
