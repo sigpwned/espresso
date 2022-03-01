@@ -51,7 +51,7 @@ Espresso adds the following limitations out of practicality:
     }
     catch(IllegalArgumentException e) {
         // The given class cannot be parsed as a bean class.
-	throw e;
+        throw e;
     }
 
     for(BeanProperty p : bc)
